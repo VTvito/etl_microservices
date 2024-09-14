@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify, request
-from .datasets import load_csv
+from app.datasets import load_csv
 
-bp = Blueprint('routes', __name__)
+bp = Blueprint('extraction', __name__)
 
 @bp.route('/extract', methods=['POST'])
 def extract_dataset():
