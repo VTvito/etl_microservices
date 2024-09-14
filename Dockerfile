@@ -1,18 +1,18 @@
-# Usa l'immagine base Python 3.9
+# Use base image of python 3.9
 FROM python:3.9-slim
 
-# Imposta la directory di lavoro
+# Setting the working directory
 WORKDIR /app
 
-# Copia il file requirements.txt e installa le dipendenze
+# Copy the requirements.txt file and install the dependencies
 COPY requirements.txt .
 RUN pip install -r requirements.txt
 
-# Copia tutto il codice sorgente nella directory di lavoro
+# Copy the code in the working dir
 COPY . .
 
-# Esponi la porta 5001, che è quella usata dal microservizio Flask
+# Expose the 5001 port -- used by the microservice
 EXPOSE 5001
 
-# Comando per avviare il microservizio
+# Command to start the microservice
 CMD ["python", "run.py"]
