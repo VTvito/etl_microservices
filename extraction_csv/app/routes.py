@@ -22,3 +22,12 @@ def extract_dataset():
 
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
+
+
+# exposition of endpoint data - API call from other microservices # still to complete
+""""
+@bp.route('/data', Method=['GET'])
+def get_data():
+    # Return extracted data like JSON
+    return jsonify(extraced_data)
+"""
