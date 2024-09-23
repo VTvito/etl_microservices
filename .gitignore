@@ -4,3 +4,15 @@ transformation_service/app/__pycache__/transformation.cpython-39.pyc
 extraction_service/app/__pycache__/__init__.cpython-39.pyc
 extraction_service/app/__pycache__/datasets.cpython-39.pyc
 extraction_service/app/__pycache__/routes.cpython-39.pyc
+airflow/dags/__pycache__/etl_dag.cpython-37.pyc
+airflow/logs/dag_id=etl_microservice_dag/run_id=manual__2024-09-17T225747.589798+0000/task_id=extract_data/attempt=1.log
+airflow/logs/dag_id=etl_microservice_dag/run_id=manual__2024-09-17T225747.589798+0000/task_id=transform_data/attempt=1.log
+airflow/logs/dag_id=etl_microservice_dag/run_id=manual__2024-09-17T230134.243745+0000/task_id=extract_data/attempt=1.log
+airflow/logs/dag_id=etl_microservice_dag/run_id=manual__2024-09-17T230134.243745+0000/task_id=transform_data/attempt=1.log
+airflow/logs/dag_id=etl_microservice_dag/run_id=manual__2024-09-18T001226.536523+0000/task_id=extract_data/attempt=1.log
+airflow/logs/dag_id=etl_microservice_dag/run_id=manual__2024-09-18T001226.536523+0000/task_id=transform_data/attempt=1.log
+airflow/logs/dag_id=etl_microservice_dag/run_id=manual__2024-09-18T013158+0200/task_id=extract_data/attempt=1.log
+airflow/logs/dag_id=etl_microservice_dag/run_id=manual__2024-09-18T013158+0200/task_id=transform_data/attempt=1.log
+airflow/logs/dag_processor_manager/dag_processor_manager.log
+airflow/logs/scheduler/latest
+airflow/logs/scheduler/2024-09-18/etl_dag.py.log
