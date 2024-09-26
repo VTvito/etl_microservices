@@ -1,7 +1,6 @@
-# version: '3'can be ignored
 services:
   airflow:
-    image: apache/airflow:2.5.0
+    image: apache/airflow:latest
     environment:
       - AIRFLOW__CORE__SQL_ALCHEMY_CONN=sqlite:////opt/airflow/airflow.db
     volumes:
@@ -13,13 +12,13 @@ services:
     networks:
       - etl_network
     command: > 
-      bash -c "airflow db init && airflow webserver"
+      bash -c "airflow db init && airflow webserver & airflow scheduler"
     restart: always
 
   extraction_service:
-    image: extraction_service  # Usa l'immagine già costruita
+    image: extraction_service  # Use the previous built image
     volumes:
-      - "C:/Users/vitod/Desktop:/app/data"  # Monta il volume necessario per l'extraction service
+      - "C:/Users/vitod/Desktop:/app/data"  # Mount the volume for the service (where is the .cvs test file)
     expose:
       - "5001"
     ports:
@@ -29,7 +28,7 @@ services:
     restart: always
 
   transformation_service:
-    image: transformation_service  # Usa l'immagine già costruita
+    image: transformation_service  # Use the previous built image
     expose:
       - "5002"
     ports:
@@ -38,6 +37,6 @@ services:
       - etl_network
     restart: always
 
-networks:
+networks:   # create a network to allows comunication between services
   etl_network:
     driver: bridge
