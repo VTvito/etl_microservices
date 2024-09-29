@@ -11,7 +11,7 @@ RUN pip install -r requirements.txt
 # Copy the code in the working dir
 COPY . .
 
-# Expose the 5002 port -- used by the microservice
+# Expose the 5002 port -- this microservice used this port
 EXPOSE 5002
 
 # Command to start the microservice

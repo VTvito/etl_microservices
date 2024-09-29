@@ -1,8 +1,8 @@
 services:
   airflow:
-    image: apache/airflow:latest
-    environment:
-      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=sqlite:////opt/airflow/airflow.db
+    build:
+      context: ./airflow
+      dockerfile: Dockerfile  # The Dockerfile for Airflow
     volumes:
       - ./airflow/dags:/opt/airflow/dags
       - ./airflow/logs:/opt/airflow/logs
@@ -11,14 +11,14 @@ services:
       - "8080:8080"
     networks:
       - etl_network
-    command: > 
-      bash -c "airflow db init && airflow webserver & airflow scheduler"
     restart: always
 
   extraction_service:
-    image: extraction_service  # Use the previous built image
+    build:
+      context: ./extraction_service
+      dockerfile: Dockerfile
     volumes:
-      - "C:/Users/vitod/Desktop:/app/data"  # Mount the volume for the service (where is the .cvs test file)
+      - "C:/Users/vitod/Desktop:/app/data"
     expose:
       - "5001"
     ports:
@@ -28,7 +28,9 @@ services:
     restart: always
 
   transformation_service:
-    image: transformation_service  # Use the previous built image
+    build:
+      context: ./transformation_service
+      dockerfile: Dockerfile
     expose:
       - "5002"
     ports:
