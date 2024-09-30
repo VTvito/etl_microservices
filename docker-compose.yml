@@ -3,6 +3,7 @@ services:
     build:
       context: ./airflow
       dockerfile: Dockerfile  # The Dockerfile for Airflow
+    container_name: airflow
     volumes:
       - ./airflow/dags:/opt/airflow/dags
       - ./airflow/logs:/opt/airflow/logs
@@ -17,6 +18,7 @@ services:
     build:
       context: ./extraction_service
       dockerfile: Dockerfile
+    container_name: extraction_service
     volumes:
       - "C:/Users/vitod/Desktop:/app/data"
     expose:
@@ -31,6 +33,7 @@ services:
     build:
       context: ./transformation_service
       dockerfile: Dockerfile
+    container_name: transformation_service
     expose:
       - "5002"
     ports:
