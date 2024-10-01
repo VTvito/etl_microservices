@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: extraction-service
+  namespace: etl-microservices
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: extraction-service
+  template:
+    metadata:
+      labels:
+        app: extraction-service
+    spec:
+      containers:
+      - name: extraction-service
+        image: vtvito/etl_microservices:extraction-service-v1
+        ports:
+        - containerPort: 5001
+        volumeMounts:
+        - name: csv-volume
+          mountPath: /app/data  # Path all'interno del container
+      volumes:
+      - name: csv-volume
+        hostPath:
+          path: /run/desktop/mnt/host/c/Users/vitod/Desktop  # Path locale del file CSV

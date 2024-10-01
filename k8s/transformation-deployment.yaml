@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: transformation-service
+  namespace: etl-microservices
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: transformation-service
+  template:
+    metadata:
+      labels:
+        app: transformation-service
+    spec:
+      containers:
+      - name: transformation-service
+        image: vtvito/etl_microservices:transformation-service-v1
+        ports:
+        - containerPort: 5002
