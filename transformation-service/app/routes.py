@@ -31,7 +31,7 @@ def transform_extracted_data():
 
     try:
         # extract data from extraction_microservice
-        extraction_response = requests.get('http://extraction_service:5001/getdata') # 127.0.0.1:5001
+        extraction_response = requests.get('http://extraction-service:5001/getdata') # 127.0.0.1:5001
 
         if extraction_response.status_code != 200:
             return jsonify({"status":"error", "message":"Error during data extraction from GET"}), 500

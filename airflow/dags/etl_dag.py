@@ -19,7 +19,7 @@ dag = DAG(
 
 # Funzione per chiamare il microservizio di estrazione
 def call_extraction_service():
-    url = 'http://extraction_service:5001/extract'
+    url = 'http://extraction-service:5001/extract'
     payload = {
         "dataset": "example_dataset",
         "dataset_params": {
@@ -33,7 +33,7 @@ def call_extraction_service():
 
 # Funzione per chiamare il microservizio di trasformazione
 def call_transformation_service():
-    url = 'http://transformation_service:5002/transform_after_extract'
+    url = 'http://transformation-service:5002/transform_after_extract'
     response = requests.post(url)
     response.raise_for_status()  # Verifica che non ci siano errori
     print(f"Transformation Response: {response.json()}")

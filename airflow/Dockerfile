@@ -3,6 +3,8 @@ FROM apache/airflow:latest
 
 # Set the environment variable for the Airflow database
 ENV AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=sqlite:////opt/airflow/airflow.db
+ENV AIRFLOW__WEBSERVER__WEB_SERVER_WORKER_TIMEOUT=300
+ENV AIRFLOW__WEBSERVER__WEB_SERVER_MASTER_TIMEOUT=300
 
 # Create necessary directories for volumes
 RUN mkdir -p /opt/airflow/dags /opt/airflow/logs /opt/airflow/plugins

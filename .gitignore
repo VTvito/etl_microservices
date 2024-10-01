@@ -4,5 +4,3 @@ airflow/dags/__pycache__/
 extraction_service/app/__pycache__/
 
 transformation_service/app/__pycache__/
-
-k8s/

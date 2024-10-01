@@ -11,14 +11,14 @@ services:
     ports:
       - "8080:8080"
     networks:
-      - etl_network
+      - etl-network
     restart: always
 
-  extraction_service:
+  extraction-service:
     build:
-      context: ./extraction_service
+      context: ./extraction-service
       dockerfile: Dockerfile
-    container_name: extraction_service
+    container_name: extraction-service
     volumes:
       - "C:/Users/vitod/Desktop:/app/data"
     expose:
@@ -26,22 +26,22 @@ services:
     ports:
       - "5001:5001"
     networks:
-      - etl_network
+      - etl-network
     restart: always
 
-  transformation_service:
+  transformation-service:
     build:
-      context: ./transformation_service
+      context: ./transformation-service
       dockerfile: Dockerfile
-    container_name: transformation_service
+    container_name: transformation-service
     expose:
       - "5002"
     ports:
       - "5002:5002"
     networks:
-      - etl_network
+      - etl-network
     restart: always
 
 networks:   # create a network to allows comunication between services
-  etl_network:
+  etl-network:
     driver: bridge
