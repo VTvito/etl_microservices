@@ -1,52 +1,45 @@
 from flask import Blueprint, jsonify, request
 from app.datasets import load_csv
+import os
+import pandas as pd
 
 bp = Blueprint('extraction', __name__)
 
-# gloval variable to keept temporary the data extracted
-extracted_data = None
+DATA_FOLDER = '/app/data'
 
-# endpoint to receive the data from POST
 @bp.route('/extract', methods=['POST'])
 def extract_dataset():
-
-    global extracted_data
-    
     try:
         dataset_name = request.json.get('dataset')
         dataset_params = request.json.get('dataset_params')
 
         if not dataset_name or not dataset_params:
-            return jsonify({"error": "Dataset name and parameters are required"}), 400
+            return jsonify({"error": "Nome del dataset e parametri sono richiesti"}), 400
 
-        # Extract the dataset by using defined loading function from datasets.py
+        # Estrazione del dataset
         extracted_data = load_csv(dataset_params['file_path'])
-        
+
+        # Salvataggio del dataset estratto come file CSV nel volume condiviso
+        extracted_file_path = os.path.join(DATA_FOLDER, 'extracted_data.csv')
+        extracted_data.to_csv(extracted_file_path, index=False)
+
         return jsonify({
             "status": "success",
-            "data_preview": extracted_data.head().to_dict()  # Show the first 5 records
+            "data_preview": extracted_data.head().to_dict()  # Mostra i primi 5 record
         }), 200
 
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
 
-
-# exposition of endpoint data - API call from other microservices # to complete
 @bp.route('/getdata', methods=['GET'])
 def getdata():
-    
-    global extracted_data
-    
-    if extracted_data is None:
-        return jsonify({"status":"error", "message":"No data available"}), 400
-    
-    # Return extracted data like JSON
-    return jsonify(extracted_data.to_dict()), 200
+    try:
+        extracted_file_path = os.path.join(DATA_FOLDER, 'extracted_data.csv')
+        if not os.path.exists(extracted_file_path):
+            return jsonify({"status": "error", "message": "Nessun dato disponibile"}), 400
 
+        extracted_data = pd.read_csv(extracted_file_path)
+        return jsonify(extracted_data.to_dict()), 200
 
-# extra fetures to complete --> show html page with datasample
-"""
-@bp.route('/showdata', methods=['GET'])
-def showdata():
-    print(extracted_data)
-"""
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500

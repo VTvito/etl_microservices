@@ -8,7 +8,7 @@ def apply_transformations(df):
     
     first_column = df_clean.columns[0]
 
-    # df_clean['new_column'] = df_clean['existing_column']*2
-    df.loc[:, 'new_column'] = df[first_column] * 2 # to avoid CopyWarning
+    # create a new column (multiply * 2 the values )
+    df_clean['new_column'] = df_clean[first_column] * 2  
 
     return df_clean

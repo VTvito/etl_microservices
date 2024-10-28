@@ -2,12 +2,13 @@ services:
   airflow:
     build:
       context: ./airflow
-      dockerfile: Dockerfile  # The Dockerfile for Airflow
+      dockerfile: Dockerfile
     container_name: airflow
     volumes:
       - ./airflow/dags:/opt/airflow/dags
       - ./airflow/logs:/opt/airflow/logs
       - ./plugins:/opt/airflow/plugins
+      - etl-data:/app/data  # Shared volume
     ports:
       - "8080:8080"
     networks:
@@ -20,7 +21,7 @@ services:
       dockerfile: Dockerfile
     container_name: extraction-service
     volumes:
-      - "C:/Users/vitod/Desktop:/app/data"
+      - etl-data:/app/data  # Mount shared volume
     expose:
       - "5001"
     ports:
@@ -34,6 +35,8 @@ services:
       context: ./transformation-service
       dockerfile: Dockerfile
     container_name: transformation-service
+    volumes:
+      - etl-data:/app/data  # Mount shared volume
     expose:
       - "5002"
     ports:
@@ -42,6 +45,24 @@ services:
       - etl-network
     restart: always
 
-networks:   # create a network to allows comunication between services
+  load-service:
+    build:
+      context: ./load-service
+      dockerfile: Dockerfile
+    container_name: load-service
+    volumes:
+      - etl-data:/app/data  # Mount shared volume
+    expose:
+      - "5003"
+    ports:
+      - "5003:5003"
+    networks:
+      - etl-network
+    restart: always
+
+networks:
   etl-network:
     driver: bridge
+
+volumes:
+  etl-data:

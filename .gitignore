@@ -1,6 +1,8 @@
 airflow/logs/
 airflow/dags/__pycache__/
 
-extraction_service/app/__pycache__/
+extraction-service/app/__pycache__/
 
-transformation_service/app/__pycache__/
+transformation-service/app/__pycache__/
+
+load-service/app/__pycache__/
