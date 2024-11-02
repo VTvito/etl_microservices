@@ -5,23 +5,23 @@ services:
       dockerfile: Dockerfile
     container_name: airflow
     volumes:
-      - ./airflow/dags:/opt/airflow/dags
-      - ./airflow/logs:/opt/airflow/logs
-      - ./plugins:/opt/airflow/plugins
-      - etl-data:/app/data  # Shared volume
+      - etl-data:/app/data  # Volume condiviso per i dati
+      - etl-data-dags:/opt/airflow/dags  # Volume per la cartella dei DAGs
+      # per montare una cartella locale direttamente
+      # - ./local_dags_folder:/opt/airflow/dags
     ports:
       - "8080:8080"
     networks:
       - etl-network
     restart: always
 
-  extraction-service:
+  read-csv-service:
     build:
-      context: ./extraction-service
+      context: ./read-csv-service
       dockerfile: Dockerfile
-    container_name: extraction-service
+    container_name: read-csv-service
     volumes:
-      - etl-data:/app/data  # Mount shared volume
+      - etl-data:/app/data  # Shared volume
     expose:
       - "5001"
     ports:
@@ -30,13 +30,13 @@ services:
       - etl-network
     restart: always
 
-  transformation-service:
+  clean-nan-csv-service:
     build:
-      context: ./transformation-service
+      context: ./clean-nan-csv-service
       dockerfile: Dockerfile
-    container_name: transformation-service
+    container_name: clean-nan-csv-service
     volumes:
-      - etl-data:/app/data  # Mount shared volume
+      - etl-data:/app/data  # Shared volume
     expose:
       - "5002"
     ports:
@@ -45,13 +45,13 @@ services:
       - etl-network
     restart: always
 
-  load-service:
+  get-columns-csv-service:
     build:
-      context: ./load-service
+      context: ./get-columns-csv-service
       dockerfile: Dockerfile
-    container_name: load-service
+    container_name: get-columns-csv-service
     volumes:
-      - etl-data:/app/data  # Mount shared volume
+      - etl-data:/app/data  # Shared volume
     expose:
       - "5003"
     ports:
@@ -60,9 +60,25 @@ services:
       - etl-network
     restart: always
 
+  delete-columns-csv-service:
+    build:
+      context: ./delete-columns-csv-service
+      dockerfile: Dockerfile
+    container_name: delete-columns-csv-service
+    volumes:
+      - etl-data:/app/data  # Shared volume
+    expose:
+      - "5004"
+    ports:
+      - "5004:5004"
+    networks:
+      - etl-network
+    restart: always  
+
 networks:
   etl-network:
     driver: bridge
 
 volumes:
   etl-data:
+  etl-data-dags:

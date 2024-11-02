@@ -1,20 +1,15 @@
-# Use the official Apache Airflow image as a base
+# Usa l'immagine ufficiale di Apache Airflow
 FROM apache/airflow:latest
 
-# Set the environment variable for the Airflow database
+# Imposta le variabili di ambiente per il database e timeout del webserver
 ENV AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=sqlite:////opt/airflow/airflow.db
 ENV AIRFLOW__WEBSERVER__WEB_SERVER_WORKER_TIMEOUT=300
 ENV AIRFLOW__WEBSERVER__WEB_SERVER_MASTER_TIMEOUT=300
 
-# Create necessary directories for volumes
+# Crea le cartelle necessarie e assegna i permessi
 RUN mkdir -p /opt/airflow/dags /opt/airflow/logs /opt/airflow/plugins
 
-# Copy your DAGs, plugins, and other required files
-# You can uncomment these lines if you have DAGs or plugins to copy during the build
-COPY ./dags /opt/airflow/dags
-COPY ./plugins /opt/airflow/plugins
-
-# Initialize the Airflow database and create the admin user
+# Inizializza il database Airflow e crea un utente amministratore
 RUN airflow db init && \
     airflow users create \
     --username admin \
@@ -24,5 +19,5 @@ RUN airflow db init && \
     --email admin@example.com \
     --password admin
 
-# Set the entry point to start both the webserver and the scheduler
+# Avvia sia il webserver sia lo scheduler
 CMD ["bash", "-c", "airflow webserver & airflow scheduler"]
