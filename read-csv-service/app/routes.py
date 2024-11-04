@@ -52,3 +52,15 @@ def getdata(client_id, dataset_name):
 
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
+    
+    
+# Codice per il monitoraggio
+from prometheus_client import Counter, generate_latest
+from flask import Response
+
+REQUEST_COUNTER = Counter('service_requests_total', 'Total number of requests for this service')
+
+@bp.route('/metrics', methods=['GET'])
+def metrics():
+    REQUEST_COUNTER.inc()  # Incrementa ogni volta che viene richiesta la metrica
+    return Response(generate_latest(), mimetype="text/plain")

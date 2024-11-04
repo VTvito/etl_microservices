@@ -1,0 +1,26 @@
+#Questo file definisce i job e i target che Prometheus deve monitorare --i microservizi.
+
+global:
+  scrape_interval: 5s  # Intervallo di raccolta delle metriche
+  evaluation_interval: 5s
+
+scrape_configs:
+  - job_name: 'read-csv-service'
+    metrics_path: '/metrics'
+    static_configs:
+      - targets: ['read-csv-service:5001']
+
+  - job_name: 'clean-nan-csv-service'
+    metrics_path: '/metrics'
+    static_configs:
+      - targets: ['clean-nan-csv-service:5002']
+
+  - job_name: 'get-columns-csv-service'
+    metrics_path: '/metrics'
+    static_configs:
+      - targets: ['get-columns-csv-service:5003']
+
+  - job_name: 'delete-columns-csv-service'
+    metrics_path: '/metrics'
+    static_configs:
+      - targets: ['delete-columns-csv-service:5004']
