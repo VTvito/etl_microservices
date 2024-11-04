@@ -20,4 +20,4 @@ RUN airflow db init && \
     --password admin
 
 # Avvia sia il webserver sia lo scheduler
-CMD ["bash", "-c", "airflow webserver & airflow scheduler"]
+CMD ["bash", "-c", "sleep 30 && airflow webserver & airflow scheduler"]

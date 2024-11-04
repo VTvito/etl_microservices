@@ -5,10 +5,8 @@ services:
       dockerfile: Dockerfile
     container_name: airflow
     volumes:
-      - etl-data:/app/data  # Volume condiviso per i dati
-      - etl-data-dags:/opt/airflow/dags  # Volume per la cartella dei DAGs
-      # per montare una cartella locale direttamente
-      # - ./local_dags_folder:/opt/airflow/dags
+      - etl-containers-shared-data:/app/data        # Volume condiviso fra i containers i dati
+      - etl-data-airflow:/opt/airflow               # Volume per la persistenza dei dati di Airflow
     ports:
       - "8080:8080"
     networks:
@@ -20,7 +18,8 @@ services:
     image: prom/prometheus:latest
     container_name: prometheus
     volumes:
-      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - etl-prometheus-data:/etc/prometheus                         # Volume
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml  # Montaggio Folder su Volume
     ports:
       - "9090:9090"
     networks:
@@ -34,7 +33,7 @@ services:
       - GF_SECURITY_ADMIN_USER=admin
       - GF_SECURITY_ADMIN_PASSWORD=admin
     volumes:
-      - grafana-data:/var/lib/grafana
+      - etl-grafana-data:/var/lib/grafana
     ports:
       - "3000:3000"
     networks:
@@ -48,7 +47,7 @@ services:
       dockerfile: Dockerfile
     container_name: read-csv-service
     volumes:
-      - etl-data:/app/data  # Shared volume
+      - etl-containers-shared-data:/app/data
     expose:
       - "5001"
     ports:
@@ -63,7 +62,7 @@ services:
       dockerfile: Dockerfile
     container_name: clean-nan-csv-service
     volumes:
-      - etl-data:/app/data  # Shared volume
+      - etl-containers-shared-data:/app/data
     expose:
       - "5002"
     ports:
@@ -78,7 +77,7 @@ services:
       dockerfile: Dockerfile
     container_name: get-columns-csv-service
     volumes:
-      - etl-data:/app/data  # Shared volume
+      - etl-containers-shared-data:/app/data
     expose:
       - "5003"
     ports:
@@ -93,7 +92,7 @@ services:
       dockerfile: Dockerfile
     container_name: delete-columns-csv-service
     volumes:
-      - etl-data:/app/data  # Shared volume
+      - etl-containers-shared-data:/app/data
     expose:
       - "5004"
     ports:
@@ -107,6 +106,7 @@ networks:
     driver: bridge
 
 volumes:
-  etl-data:
-  etl-data-dags:
-  grafana-data:
+  etl-containers-shared-data:
+  etl-data-airflow:
+  etl-grafana-data:
+  etl-prometheus-data:
