@@ -11,7 +11,7 @@ default_args = {
 }
 
 dag = DAG(
-    'sample_etl_pipeline_1',
+    'sample_etl_pipeline_2',
     default_args=default_args,
     description='Sample ETL Pipeline using Microservices',
     schedule_interval=None,  # Trigger manuale

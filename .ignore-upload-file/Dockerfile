@@ -11,7 +11,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy the code in the working dir
 COPY . .
 
-# Expose the 5002 port -- this microservice used this port
+# Expose the 5006 port -- this microservice used this port
 EXPOSE 5006
 
 # Command to start the microservice

@@ -1,9 +1,37 @@
 services:
+  postgres:
+    image: postgres:latest
+    container_name: postgres
+    environment:
+      POSTGRES_USER: airflow
+      POSTGRES_PASSWORD: airflow
+      POSTGRES_DB: airflow
+    ports:
+      - "5432:5432"
+    volumes:
+      - etl-postgres-data:/var/lib/postgresql/data
+    networks:
+      - etl-network
+
+  # per il monitoraggio in Prometheus
+  postgres-exporter:
+    image: quay.io/prometheuscommunity/postgres-exporter:latest
+    container_name: postgres-exporter
+    environment:
+      DATA_SOURCE_NAME: postgres://airflow:airflow@postgres:5432/airflow?sslmode=disable
+    ports:
+      - "9187:9187"
+    networks:
+      - etl-network
+    restart: always
+
   airflow:
     build:
       context: ./airflow
       dockerfile: Dockerfile
     container_name: airflow
+    depends_on:
+    - postgres
     volumes:
       - etl-containers-shared-data:/app/data         # Volume condiviso fra i container per i dati
       - etl-data-airflow:/opt/airflow                # Volume per la persistenza dei dati di Airflow
@@ -40,7 +68,7 @@ services:
       - etl-network
     restart: always
 
-
+# microservizi
   read-csv-service:
     build:
       context: ./read-csv-service
@@ -107,6 +135,7 @@ networks:
 
 volumes:
   etl-containers-shared-data:
+  etl-postgres-data:
   etl-data-airflow:
   etl-grafana-data:
   etl-prometheus-data:
