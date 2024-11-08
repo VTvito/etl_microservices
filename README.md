@@ -67,19 +67,17 @@ I microservizi sono strutturati in modo modulare, separando la logica di instrad
 4. **Copia dei file (dataset e dag) nei volumi montati (vedi docker-compose per il percorso)**:
  ```bash
 docker cp /path/to/local/file container_name:/path/in/container  
-
 esempio per file: docker cp dataset_test.csv read-csv-service:/app/data  
-
 esempio per i dag: docker cp airflow/dags/etl_dag.py airflow:/opt/airflow/dags  
  ```
 
 # Accedi all'interfaccia web:
 
 Airflow: http://localhost:8080  
-
 Prometheus: http://localhost:9090  
-
 Grafana: http://localhost:3000  
+
+### I files risultanti dall'elaborazione è possibile controllarli all'interno del volume Docker etl-containers-shared-data  
 
 
 5. **Deployare su Kubernetes (da ridefinire ancora)**:
@@ -87,5 +85,3 @@ Grafana: http://localhost:3000
 kubectl apply -f ./kubernetes
 kubectl get pods
 (controllo correttezza pods)
-
-
