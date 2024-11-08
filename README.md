@@ -50,7 +50,7 @@ I microservizi sono strutturati in modo modulare, separando la logica di instrad
 
 1. **Clona il repository**:
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/VTvito/etl_microservices.git
    cd etl_microservices
 
 2. **Costruisci le immigini Docker e avviale**:
