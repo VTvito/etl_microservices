@@ -13,18 +13,6 @@ services:
     networks:
       - etl-network
 
-  # per il monitoraggio in Prometheus
-  postgres-exporter:
-    image: quay.io/prometheuscommunity/postgres-exporter:latest
-    container_name: postgres-exporter
-    environment:
-      DATA_SOURCE_NAME: postgres://airflow:airflow@postgres:5432/airflow?sslmode=disable
-    ports:
-      - "9187:9187"
-    networks:
-      - etl-network
-    restart: always
-
   airflow:
     build:
       context: ./airflow
@@ -40,6 +28,17 @@ services:
     networks:
       - etl-network
     restart: always
+
+  # exporter metriche Airflow -> Prometheus
+  statsd-exporter:
+    image: prom/statsd-exporter:latest
+    container_name: statsd-exporterù
+    depends_on:
+    - postgres
+    ports:
+      - "9102:9102"  # Porta per Prometheus
+    networks:
+      - etl-network
 
 # monitoraggio microservizi
   prometheus:

@@ -1,18 +1,13 @@
-#Questo file definisce i job e i target che Prometheus deve monitorare --i microservizi.
+# Questo file definisce i job e i target che Prometheus deve monitorare
 
 global:
-  scrape_interval: 5s  # Intervallo di raccolta delle metriche
-  evaluation_interval: 5s
+  scrape_interval: 15s  # Intervallo di raccolta delle metriche
 
 scrape_configs:
-  - job_name: 'airflow'
-    static_configs:
-      - targets: ['airflow:9125']  # Porta di Airflow per l'endpoint di metriche (se supportato)
 
-  - job_name: 'postgres-exporter'
+  - job_name: 'statsd-exporter'
     static_configs:
-      - targets: ['postgres-exporter:9187']
-
+      - targets: ['statsd-exporter:9102']
 
   - job_name: 'read-csv-service'
     metrics_path: '/metrics'
