@@ -5,4 +5,5 @@ clean-nan-csv-service/app/__pycache__/
 delete-columns-csv-service/app/__pycache__/
 get-columns-csv-service/app/__pycache__/
 read-csv-service/app/__pycache__/
+extract-sql-service/app/__pycache__/
 .ignore-upload-file/app/__pycache__/

@@ -15,6 +15,7 @@ L'architettura è suddivisa nei seguenti componenti principali:
 2. **clean-nan-csv-service**: Rimuove valori NaN dai dati.
 3. **get-columns-csv-service**: Recupera le colonne specifiche del dataset.
 4. **delete-columns-csv-service**: Elimina colonne indesiderate.
+5. **extract-sql-service**: Estrae dati da tabella SQL e trasforma in CSV.
 
 I microservizi sono strutturati in modo modulare, separando la logica di instradamento (**routes**) dalla logica di manipolazione dei dati. Utilizzano **Flask** come webserver.
 
@@ -62,13 +63,13 @@ I microservizi sono strutturati in modo modulare, separando la logica di instrad
   ```bash
   docker exec -it airflow airflow db init
   docker exec -it airflow airflow users create --username admin --firstname Admin --lastname User --role Admin --email admin@example.com -–password admin
-```
+
 
 4. **Copia dei file (dataset e dag) nei volumi montati (vedi docker-compose per il percorso)**:
  ```bash
 docker cp /path/to/local/file container_name:/path/in/container  
 esempio per file: docker cp dataset_test.csv read-csv-service:/app/data  
-esempio per i dag: docker cp airflow/dags/etl_dag.py airflow:/opt/airflow/dags  
+esempio per i dags: docker cp airflow/dags/etl_dag.py airflow:/opt/airflow/dags  
  ```
 
 # Accedi all'interfaccia web:
@@ -80,7 +81,7 @@ Grafana: http://localhost:3000
 ### I files risultanti dall'elaborazione è possibile controllarli all'interno del volume Docker etl-containers-shared-data  
 
 
-5. **Deployare su Kubernetes (da ridefinire ancora)**:
+5. **Deployare su Kubernetes (da definire ancora)**:
   ```bash
 kubectl apply -f ./kubernetes
 kubectl get pods

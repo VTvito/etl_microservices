@@ -57,7 +57,7 @@ def get_transformed_data(client_id, dataset_name):
         return jsonify({"status": "error", "message": str(e)}), 500
     
 
-# Codice per il monitoraggio
+# Endpoint per il monitoraggio
 from prometheus_client import Counter, generate_latest
 from flask import Response
 

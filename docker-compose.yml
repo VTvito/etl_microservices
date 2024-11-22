@@ -32,7 +32,7 @@ services:
   # exporter metriche Airflow -> Prometheus
   statsd-exporter:
     image: prom/statsd-exporter:latest
-    container_name: statsd-exporterù
+    container_name: statsd-exporter
     depends_on:
     - postgres
     ports:
@@ -126,7 +126,22 @@ services:
       - "5004:5004"
     networks:
       - etl-network
-    restart: always  
+    restart: always
+
+  extract-sql-service:
+    build:
+      context: ./extract-sql-service
+      dockerfile: Dockerfile
+    container_name: extract-sql-service
+    volumes:
+      - etl-containers-shared-data:/app/data
+    expose:
+      - "5005"
+    ports:
+      - "5005:5005"
+    networks:
+      - etl-network
+    restart: always
 
 networks:
   etl-network:

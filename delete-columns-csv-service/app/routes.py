@@ -54,7 +54,7 @@ def get_deleted_columns_data(client_id, dataset_name):
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
     
-# Codice per il monitoraggio
+# Endpoint per il monitoraggio
 from prometheus_client import Counter, generate_latest
 from flask import Response
 
