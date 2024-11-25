@@ -144,8 +144,21 @@ services:
       - "5006:5006"
     networks:
       - etl-network
-    restart: always  
+    restart: always
 
+  extract-excel-service:
+    build:
+      context: ./extract-excel-service
+      dockerfile: Dockerfile
+    container_name: extract-excel-service
+    volumes:
+      - etl-containers-shared-data:/app/data
+    ports:
+      - "5007:5007"
+    networks:
+      - etl-network
+    restart: always
+  
 networks:
   etl-network:
     driver: bridge

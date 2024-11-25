@@ -17,6 +17,7 @@ L'architettura è suddivisa nei seguenti componenti principali:
 4. **delete-columns-csv-service**: Elimina colonne indesiderate.
 5. **extract-sql-service**: Estrae dati da tabella SQL e trasforma in CSV.
 6. **extract-api-service**: Estrae dati da endpoint API e trasforma in CSV.
+7. **extract-excel-service**: Estrae dati da file Excel e trasforma in CSV.
 
 
 I microservizi sono strutturati in modo modulare, separando la logica di instradamento (**routes**) dalla logica di manipolazione dei dati. Utilizzano **Flask** come webserver.
@@ -66,13 +67,12 @@ I microservizi sono strutturati in modo modulare, separando la logica di instrad
   docker exec -it airflow airflow db init
   docker exec -it airflow airflow users create --username admin --firstname Admin --lastname User --role Admin --email admin@example.com -–password admin
 
-
 4. **Copia dei file (dataset e dag) nei volumi montati (vedi docker-compose per il percorso)**:
- ```bash
+  ```bash
 docker cp /path/to/local/file container_name:/path/in/container  
 esempio per file: docker cp dataset_test.csv read-csv-service:/app/data  
 esempio per i dags: docker cp airflow/dags/etl_dag.py airflow:/opt/airflow/dags  
- ```
+```
 
 # Accedi all'interfaccia web:
 
