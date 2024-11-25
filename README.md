@@ -16,6 +16,8 @@ L'architettura è suddivisa nei seguenti componenti principali:
 3. **get-columns-csv-service**: Recupera le colonne specifiche del dataset.
 4. **delete-columns-csv-service**: Elimina colonne indesiderate.
 5. **extract-sql-service**: Estrae dati da tabella SQL e trasforma in CSV.
+6. **extract-api-service**: Estrae dati da endpoint API e trasforma in CSV.
+
 
 I microservizi sono strutturati in modo modulare, separando la logica di instradamento (**routes**) dalla logica di manipolazione dei dati. Utilizzano **Flask** come webserver.
 
