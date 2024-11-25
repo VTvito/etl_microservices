@@ -50,6 +50,9 @@ def getdata(client_id, db_name):
         extracted_data = pd.read_csv(extracted_file_path)
         return jsonify(extracted_data.to_dict()), 200
 
+    except ConnectionError as ce:
+        return jsonify({"status": "error", "message": str(ce)}), 400
+
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
 

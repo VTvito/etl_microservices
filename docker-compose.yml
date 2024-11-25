@@ -75,8 +75,6 @@ services:
     container_name: read-csv-service
     volumes:
       - etl-containers-shared-data:/app/data
-    expose:
-      - "5001"
     ports:
       - "5001:5001"
     networks:
@@ -90,8 +88,6 @@ services:
     container_name: clean-nan-csv-service
     volumes:
       - etl-containers-shared-data:/app/data
-    expose:
-      - "5002"
     ports:
       - "5002:5002"
     networks:
@@ -105,8 +101,6 @@ services:
     container_name: get-columns-csv-service
     volumes:
       - etl-containers-shared-data:/app/data
-    expose:
-      - "5003"
     ports:
       - "5003:5003"
     networks:
@@ -120,8 +114,6 @@ services:
     container_name: delete-columns-csv-service
     volumes:
       - etl-containers-shared-data:/app/data
-    expose:
-      - "5004"
     ports:
       - "5004:5004"
     networks:
@@ -135,13 +127,24 @@ services:
     container_name: extract-sql-service
     volumes:
       - etl-containers-shared-data:/app/data
-    expose:
-      - "5005"
     ports:
       - "5005:5005"
     networks:
       - etl-network
     restart: always
+
+  extract-api-service:
+    build:
+      context: ./extract-api-service
+      dockerfile: Dockerfile
+    container_name: extract-api-service
+    volumes:
+      - etl-containers-shared-data:/app/data
+    ports:
+      - "5006:5006"
+    networks:
+      - etl-network
+    restart: always  
 
 networks:
   etl-network:
