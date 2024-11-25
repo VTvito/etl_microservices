@@ -68,13 +68,14 @@ I microservizi sono strutturati in modo modulare, separando la logica di instrad
   ```bash
   docker exec -it airflow airflow db init
   docker exec -it airflow airflow users create --username admin --firstname Admin --lastname User --role Admin --email admin@example.com -–password admin
+  ```
 
 4. **Copia dei file (dataset e dag) nei volumi montati (vedi docker-compose per il percorso)**:
-  ```bash
-docker cp /path/to/local/file container_name:/path/in/container  
-esempio per file: docker cp dataset_test.csv read-csv-service:/app/data  
-esempio per i dags: docker cp airflow/dags/etl_dag.py airflow:/opt/airflow/dags  
-```
+   ```bash
+   docker cp /path/to/local/file container_name:/path/in/container  
+   esempio per file: docker cp dataset_test.csv read-csv-service:/app/data  
+   esempio per i dags: docker cp airflow/dags/etl_dag.py airflow:/opt/airflow/dags  
+   ```
 
 # Accedi all'interfaccia web:
 
