@@ -158,6 +158,19 @@ services:
     networks:
       - etl-network
     restart: always
+
+  join-datasets-csv-service:
+    build:
+      context: ./join-datasets-csv-service
+      dockerfile: Dockerfile
+    container_name: join-datasets-csv-service
+    volumes:
+      - etl-containers-shared-data:/app/data
+    ports:
+      - "5008:5008"
+    networks:
+      - etl-network
+    restart: always
   
 networks:
   etl-network:

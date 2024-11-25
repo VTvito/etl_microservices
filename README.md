@@ -18,6 +18,8 @@ L'architettura è suddivisa nei seguenti componenti principali:
 5. **extract-sql-service**: Estrae dati da tabella SQL e trasforma in CSV.
 6. **extract-api-service**: Estrae dati da endpoint API e trasforma in CSV.
 7. **extract-excel-service**: Estrae dati da file Excel e trasforma in CSV.
+8. **join-datasets-csv-service**: Consente il join fra 2+ datasets su una chiave comune.
+
 
 
 I microservizi sono strutturati in modo modulare, separando la logica di instradamento (**routes**) dalla logica di manipolazione dei dati. Utilizzano **Flask** come webserver.

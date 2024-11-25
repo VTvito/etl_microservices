@@ -24,11 +24,9 @@ def api_extraction():
         # Esegui l'estrazione
         data = extract_from_api(api_url, api_params, auth_type, auth_value)
 
-        # Crea la cartella del cliente
+        # Crea la cartella del cliente se non esiste e salva i dati come .csv
         client_folder = os.path.join(DATA_FOLDER, client_id, 'extract-api')
         os.makedirs(client_folder, exist_ok=True)
-
-        # Salva i dati come CSV
         file_path = os.path.join(client_folder, f'{dataset_name}.csv')
         data.to_csv(file_path, index=False)
 
