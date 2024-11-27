@@ -1,6 +1,13 @@
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, Response
 from app.read import load_csv_to_arrow, arrow_to_json
 import pyarrow as pa
+from prometheus_client import Counter, generate_latest
+
+# Monitoring counters
+REQUEST_COUNTER = Counter('extract_csv_requests_total', 'Total requests for the extract CSV service')
+SUCCESS_COUNTER = Counter('extract_csv_success_total', 'Total successful requests for the extract CSV service')
+ERROR_COUNTER = Counter('extract_csv_error_total', 'Total failed requests for the extract CSV service')
+
 
 bp = Blueprint('extract-csv', __name__)
 
@@ -20,6 +27,7 @@ def extract_csv():
       - data_arrow (str): Serialized Arrow Table in JSON format.
     """
     try:
+        REQUEST_COUNTER.inc()
         # Get request parameters
         file_path = request.json.get('file_path')
 
@@ -32,6 +40,7 @@ def extract_csv():
         # Serialize the Arrow Table to JSON
         arrow_json = arrow_to_json(arrow_table)
 
+        SUCCESS_COUNTER.inc()
         return jsonify({
             "status": "success",
             "data_preview": arrow_table.to_pandas().head().to_dict(),
@@ -39,17 +48,11 @@ def extract_csv():
         }), 200
 
     except Exception as e:
+        ERROR_COUNTER.inc()
         return jsonify({"status": "error", "message": str(e)}), 500
 
 
 # Monitoring endpoint
-from prometheus_client import Counter, generate_latest
-from flask import Response
-
-REQUEST_COUNTER = Counter('extract_csv_requests_total', 'Total requests for the extract CSV service')
-SUCCESS_COUNTER = Counter('extract_csv_success_total', 'Total successful requests for the extract CSV service')
-ERROR_COUNTER = Counter('extract_csv_error_total', 'Total failed requests for the extract CSV service')
-
 @bp.route('/metrics', methods=['GET'])
 def metrics():
     """
@@ -58,5 +61,4 @@ def metrics():
     Returns:
     - Metrics collected by Prometheus as plaintext.
     """
-    REQUEST_COUNTER.inc()  # Increment total requests
     return Response(generate_latest(), mimetype="text/plain")
