@@ -11,7 +11,7 @@ con persistenza dei dati garantita da Postgres per il database di Airflow e volu
 L'architettura è suddivisa nei seguenti componenti principali:
 
 ### MICROSERVIZI ETL:
-1. **read-csv-service**: Estrae i dati da file CSV.
+1. **extract-csv-service**: Estrae i dati da file CSV.
 2. **clean-nan-csv-service**: Rimuove valori NaN dai dati.
 3. **get-columns-csv-service**: Recupera le colonne specifiche del dataset.
 4. **delete-columns-csv-service**: Elimina colonne indesiderate.

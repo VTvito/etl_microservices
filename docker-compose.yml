@@ -68,11 +68,11 @@ services:
     restart: always
 
 # microservizi
-  read-csv-service:
+  extract-csv-service:
     build:
-      context: ./read-csv-service
+      context: ./services/extract-csv-service
       dockerfile: Dockerfile
-    container_name: read-csv-service
+    container_name: extract-csv-service
     volumes:
       - etl-containers-shared-data:/app/data
     ports:
@@ -83,7 +83,7 @@ services:
 
   clean-nan-csv-service:
     build:
-      context: ./clean-nan-csv-service
+      context: ./services/clean-nan-csv-service
       dockerfile: Dockerfile
     container_name: clean-nan-csv-service
     volumes:
@@ -96,7 +96,7 @@ services:
 
   get-columns-csv-service:
     build:
-      context: ./get-columns-csv-service
+      context: ./services/get-columns-csv-service
       dockerfile: Dockerfile
     container_name: get-columns-csv-service
     volumes:
@@ -109,7 +109,7 @@ services:
 
   delete-columns-csv-service:
     build:
-      context: ./delete-columns-csv-service
+      context: ./services/delete-columns-csv-service
       dockerfile: Dockerfile
     container_name: delete-columns-csv-service
     volumes:
@@ -122,7 +122,7 @@ services:
 
   extract-sql-service:
     build:
-      context: ./extract-sql-service
+      context: ./services/extract-sql-service
       dockerfile: Dockerfile
     container_name: extract-sql-service
     volumes:
@@ -135,7 +135,7 @@ services:
 
   extract-api-service:
     build:
-      context: ./extract-api-service
+      context: ./services/extract-api-service
       dockerfile: Dockerfile
     container_name: extract-api-service
     volumes:
@@ -148,7 +148,7 @@ services:
 
   extract-excel-service:
     build:
-      context: ./extract-excel-service
+      context: ./services/extract-excel-service
       dockerfile: Dockerfile
     container_name: extract-excel-service
     volumes:
@@ -161,7 +161,7 @@ services:
 
   join-datasets-csv-service:
     build:
-      context: ./join-datasets-csv-service
+      context: ./services/join-datasets-csv-service
       dockerfile: Dockerfile
     container_name: join-datasets-csv-service
     volumes:

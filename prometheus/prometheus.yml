@@ -9,10 +9,10 @@ scrape_configs:
     static_configs:
       - targets: ['statsd-exporter:9102']
 
-  - job_name: 'read-csv-service'
+  - job_name: 'extract-csv-service'
     metrics_path: '/metrics'
     static_configs:
-      - targets: ['read-csv-service:5001']
+      - targets: ['extract-csv-service:5001']
 
   - job_name: 'clean-nan-csv-service'
     metrics_path: '/metrics'
