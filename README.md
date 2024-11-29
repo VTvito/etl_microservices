@@ -12,12 +12,12 @@ L'architettura è suddivisa nei seguenti componenti principali:
 
 ### MICROSERVIZI ETL:
 1. **extract-csv-service**: Estrae i dati da file CSV.
-2. **clean-nan-csv-service**: Rimuove valori NaN dai dati.
-3. **get-columns-csv-service**: Recupera le colonne specifiche del dataset.
-4. **delete-columns-csv-service**: Elimina colonne indesiderate.
-5. **extract-sql-service**: Estrae dati da tabella SQL e trasforma in CSV.
-6. **extract-api-service**: Estrae dati da endpoint API e trasforma in CSV.
-7. **extract-excel-service**: Estrae dati da file Excel e trasforma in CSV.
+2. **extract-sql-service**: Estrae dati da tabella SQL e trasforma in CSV.
+3. **extract-api-service**: Estrae dati da endpoint API e trasforma in CSV.
+4. **extract-excel-service**: Estrae dati da file Excel e trasforma in CSV.
+5. **clean-nan-service**: Rimuove valori NaN dai dati.
+6. **get-columns-csv-service**: Recupera le colonne specifiche del dataset.
+7. **delete-columns-csv-service**: Elimina colonne indesiderate.
 8. **join-datasets-csv-service**: Consente il join fra 2+ datasets su una chiave comune.
 
 

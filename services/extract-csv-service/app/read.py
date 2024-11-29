@@ -1,6 +1,6 @@
 import pyarrow as pa
 import pyarrow.csv as pacsv
-import pandas as pd
+import pyarrow.ipc as pa_ipc
 
 def load_csv_to_arrow(file_path):
     """
@@ -17,18 +17,20 @@ def load_csv_to_arrow(file_path):
     except Exception as e:
         raise ValueError(f"Failed to load CSV into Arrow format: {e}")
 
-def arrow_to_json(arrow_table):
+def arrow_to_ipc(arrow_table):
     """
-    Converts an Arrow Table into a JSON-serializable string.
+    Serializes an Arrow Table to IPC format (stream).
 
     Args:
-        arrow_table (pyarrow.Table): Table containing the data.
+        arrow_table (pyarrow.Table): Table to serialize.
 
     Returns:
-        str: JSON representation of the Arrow Table.
+        bytes: Serialized Arrow Table in IPC format.
     """
     try:
-        pandas_df = arrow_table.to_pandas()
-        return pandas_df.to_json(orient="records")
+        sink = pa.BufferOutputStream()
+        with pa_ipc.new_stream(sink, arrow_table.schema) as writer:
+            writer.write_table(arrow_table)
+        return sink.getvalue().to_pybytes()
     except Exception as e:
-        raise ValueError(f"Failed to serialize Arrow Table to JSON: {e}")
+        raise ValueError(f"Failed to serialize Arrow Table to IPC format: {e}")

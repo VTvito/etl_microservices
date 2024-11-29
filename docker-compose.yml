@@ -81,11 +81,11 @@ services:
       - etl-network
     restart: always
 
-  clean-nan-csv-service:
+  clean-nan-service:
     build:
-      context: ./services/clean-nan-csv-service
+      context: ./services/clean-nan-service
       dockerfile: Dockerfile
-    container_name: clean-nan-csv-service
+    container_name: clean-nan-service
     volumes:
       - etl-containers-shared-data:/app/data
     ports:
