@@ -1,11 +1,13 @@
 airflow/logs/
 airflow/dags/__pycache__/
 
-services/clean-nan-csv-service/app/__pycache__/
+services/clean-nan-service/app/__pycache__/
 services/delete-columns-csv-service/app/__pycache__/
 services/get-columns-csv-service/app/__pycache__/
 services/extract-csv-service/app/__pycache__/
 services/extract-sql-service/app/__pycache__/
 services/extract-excel-service/app/__pycache__/
 services/extract-api-service/app/__pycache__/
+services/extract-api-service/app/__pycache__/
+
 services/.ignore-upload-file/app/__pycache__/

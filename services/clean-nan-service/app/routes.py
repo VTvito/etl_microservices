@@ -1,10 +1,15 @@
+import logging
 from flask import Blueprint, jsonify, request, Response
-from app.clean import apply_transformations
+from app.clean import apply_transformations, arrow_to_ipc
+from prometheus_client import Counter, generate_latest
 import pyarrow as pa
 import pyarrow.ipc as pa_ipc
-from prometheus_client import Counter, generate_latest
 
 bp = Blueprint('clean-nan', __name__)
+
+# Logging configuration
+logging.basicConfig(level=logging.INFO, format='%(asctime)s %(levelname)s %(name)s %(message)s')
+logger = logging.getLogger('clean-nan-service')
 
 # Monitoring counters
 REQUEST_COUNTER = Counter('clean_nan_requests_total', 'Total requests for the clean NaN service')
@@ -15,49 +20,51 @@ ERROR_COUNTER = Counter('clean_nan_error_total', 'Total failed requests for the 
 def clean_nan():
     """
     API Endpoint to clean data by removing NaN values.
-    
+
     Request Body:
     - Arrow IPC data in binary format.
-    
+
     Returns:
-    - Cleaned data in Arrow IPC binary format.
+    - Cleaned Arrow IPC data in binary format.
     """
     try:
         REQUEST_COUNTER.inc()
+        logger.info("Received /clean-nan request.")
 
-        # Ottieni i dati binari dal corpo della richiesta
-        arrow_ipc = request.get_data()
-        if not arrow_ipc:
-            return jsonify({"error": "No data received"}), 400
+        # Get the binary data from the request body
+        ipc_data = request.get_data()
+        if not ipc_data:
+            logger.error("No data received in /clean-nan request.")
+            ERROR_COUNTER.inc()
+            return jsonify({"status": "error", "message": "No data received"}), 400
 
-        # Deserializza la Tabella Arrow dal formato IPC
+        logger.info(f"Received {len(ipc_data)} bytes of Arrow IPC data.")
+
+        # Deserialize Arrow Table from IPC data
         try:
-            reader = pa_ipc.open_stream(pa.BufferReader(arrow_ipc))
+            reader = pa_ipc.open_stream(pa.BufferReader(ipc_data))
             arrow_table = reader.read_all()
+            logger.info(f"Deserialized Arrow Table with {arrow_table.num_rows} rows.")
         except Exception as e:
-            return jsonify({"error": f"Failed to parse Arrow IPC data: {str(e)}"}), 400
+            logger.error(f"Failed to parse Arrow IPC data: {e}")
+            ERROR_COUNTER.inc()
+            return jsonify({"status": "error", "message": f"Failed to parse Arrow IPC data: {str(e)}"}), 400
 
-        # Applica le trasformazioni
+        # Apply transformations
         cleaned_arrow_table = apply_transformations(arrow_table)
+        logger.info(f"Applied transformations, resulting in {cleaned_arrow_table.num_rows} rows.")
 
-        # Serializza la Tabella Arrow pulita in formato IPC
-        try:
-            sink = pa.BufferOutputStream()
-            with pa_ipc.new_stream(sink, cleaned_arrow_table.schema) as writer:
-                writer.write_table(cleaned_arrow_table)
-            cleaned_arrow_ipc = sink.getvalue().to_pybytes()
-        except Exception as e:
-            raise ValueError(f"Failed to serialize cleaned Arrow Table to IPC: {e}")
+        # Serialize the cleaned Arrow Table to IPC format
+        cleaned_ipc_data = arrow_to_ipc(cleaned_arrow_table)
 
         SUCCESS_COUNTER.inc()
-        return Response(
-            cleaned_arrow_ipc,
-            status=200,
-            mimetype='application/vnd.apache.arrow.stream'
-        )
+        logger.info("Successfully cleaned and serialized data.")
+
+        return Response(cleaned_ipc_data, mimetype="application/vnd.apache.arrow.stream"), 200
 
     except Exception as e:
         ERROR_COUNTER.inc()
+        logger.exception("Error during /clean-nan processing.")
         return jsonify({"status": "error", "message": str(e)}), 500
 
 @bp.route('/metrics', methods=['GET'])

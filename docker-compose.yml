@@ -171,7 +171,21 @@ services:
     networks:
       - etl-network
     restart: always
-  
+
+  load-data-service:
+    build:
+      context: ./services/load-data-service
+      dockerfile: Dockerfile
+    container_name: load-data-service
+    volumes:
+      - etl-containers-shared-data:/app/data
+    ports:
+      - "5009:5009"
+    networks:
+      - etl-network
+    restart: always
+
+
 networks:
   etl-network:
     driver: bridge
