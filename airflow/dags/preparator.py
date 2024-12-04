@@ -8,8 +8,7 @@ class Preparator:
         Esempio:
         {
             "extract": "http://extract-csv-service:5001/extract-csv",
-            "clean": "http://clean-nan-service:5002/clean-nan",
-            "load": "http://load-data-service:5009/load-data"
+            ...
         }
         """
         self.services = services_config

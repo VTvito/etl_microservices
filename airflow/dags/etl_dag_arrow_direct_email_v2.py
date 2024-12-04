@@ -53,7 +53,7 @@ def extract_clean_load(**kwargs):
             file_saved = response_json.get("message")
             print(f"Load Data succeeded: {file_saved}")
             # Puoi anche salvare il percorso del file in XCom per utilizzarlo in altri task
-            # kwargs['ti'].xcom_push(key='loaded_file', value=file_saved)
+            kwargs['ti'].xcom_push(key='loaded_file', value=file_saved)
         else:
             print(f"Load Data failed: {response_json.get('message')}")
             raise Exception(f"Load Data failed: {response_json.get('message')}")
@@ -63,9 +63,33 @@ def extract_clean_load(**kwargs):
         print(f"ETL process failed: {str(e)}")
         raise
 
-with DAG('etl_direct_pipeline_copy2', default_args=default_args, schedule_interval=None) as dag:
+with DAG('etl_arrow_direct_email_v2', default_args=default_args, schedule_interval=None) as dag:
     task_extract_and_clean = PythonOperator(
         task_id='extract_clean_load',
         python_callable=extract_clean_load,
         provide_context=True
     )
+
+
+from airflow.operators.email import EmailOperator
+
+def get_loaded_file(**kwargs):
+    return kwargs['ti'].xcom_pull(key='loaded_file', task_ids='extract_clean_load')
+
+with DAG('etl_direct_pipeline_copy', default_args=default_args, schedule_interval=None) as dag:
+    task_extract_and_clean = PythonOperator(
+        task_id='extract_clean_load',
+        python_callable=extract_clean_load,
+        provide_context=True
+    )
+
+    task_send_email = EmailOperator(
+        task_id='send_email',
+        to='tuo_email@example.com',
+        subject='ETL Pipeline Completed',
+        html_content="""<h3>ETL Pipeline Completed Successfully</h3>
+                        <p>Il file pulito è stato salvato correttamente.</p>
+                        <p>Messaggio: {{ ti.xcom_pull(task_ids='extract_clean_load', key='loaded_file') }}</p>""",
+    )
+
+    task_extract_and_clean >> task_send_email

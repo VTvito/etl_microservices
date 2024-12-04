@@ -41,7 +41,7 @@ def verify_cleaned_data(**kwargs):
     # Puoi aggiungere logica per verificare i dati puliti, ad esempio salvarli su uno storage o analizzarli
     print(f"Cleaned data received, size: {len(cleaned_data)} bytes")
 
-with DAG('etl_arrow_pipeline', default_args=default_args, schedule_interval=None) as dag:
+with DAG('etl_arrow_xcom', default_args=default_args, schedule_interval=None) as dag:
     task_extract = PythonOperator(
         task_id='extract_csv',
         python_callable=extract_csv,

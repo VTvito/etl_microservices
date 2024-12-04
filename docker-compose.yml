@@ -23,6 +23,7 @@ services:
     volumes:
       - etl-containers-shared-data:/app/data         # Volume condiviso fra i container per i dati
       - etl-data-airflow:/opt/airflow                # Volume per la persistenza dei dati di Airflow
+      - ./airflow/dags:/opt/airflow/dags             # Monta la cartella locale 'dags' nel container
     ports:
       - "8080:8080"
     networks:

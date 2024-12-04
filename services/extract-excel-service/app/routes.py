@@ -1,63 +1,75 @@
-from flask import Blueprint, jsonify, request
-from app.extract import process_excel
+import logging
+from flask import Blueprint, jsonify, request, Response
+from prometheus_client import Counter, generate_latest
 import os
+import pyarrow as pa
 import pandas as pd
+from datetime import datetime
+from app.extract import process_excel, arrow_to_ipc
 
 bp = Blueprint('extract-excel', __name__)
 
-DATA_FOLDER = '/app/data'
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s %(levelname)s %(name)s %(message)s',
+    handlers=[logging.StreamHandler()]
+)
+logger = logging.getLogger('extract-excel-service')
+
+REQUEST_COUNTER = Counter('extract_excel_requests_total', 'Total requests for the extract Excel service')
+SUCCESS_COUNTER = Counter('extract_excel_success_total', 'Total successful requests for the extract Excel service')
+ERROR_COUNTER = Counter('extract_excel_error_total', 'Total failed requests for the extract Excel service')
 
 @bp.route('/extract-excel', methods=['POST'])
 def extract_excel():
+    """
+    API Endpoint to extract data from an Excel file and return Arrow IPC.
+    Input: JSON with:
+      - client_id (str)
+      - file_path (str): path to the Excel file
+
+    Output:
+      - On success: Arrow IPC binary (application/vnd.apache.arrow.stream)
+      - On error: JSON {status: error, message: ...}
+    """
     try:
-        # Parametri dinamici dal body della richiesta
-        client_id = request.json.get('client_id', 'client_id')
-        dataset_name = request.json.get('dataset', 'dataset_name')
-        file_path = request.json.get('file_path')
+        REQUEST_COUNTER.inc()
+        logger.info("Received /extract-excel request.")
+
+        data = request.get_json()
+        client_id = data.get('client_id', 'client_id')
+        file_path = data.get('file_path')
 
         if not file_path:
-            return jsonify({"error": "Il parametro file_path è richiesto"}), 400
+            logger.error("Missing 'file_path' in request.")
+            ERROR_COUNTER.inc()
+            return jsonify({"status": "error", "message": "Parameter 'file_path' is required"}), 400
 
-        # Processa il file Excel
-        data = process_excel(file_path)
+        logger.info(f"Client {client_id} extracting from {file_path}.")
 
-        # Crea una cartella per il cliente se non esiste e salva i dati come CSV
-        client_folder = os.path.join(DATA_FOLDER, client_id, 'extract-excel')
-        os.makedirs(client_folder, exist_ok=True)
-        file_path_csv = os.path.join(client_folder, f'{dataset_name}.csv')
-        data.to_csv(file_path_csv, index=False)
+        # Processa il file Excel in un DataFrame
+        df = process_excel(file_path)
+        logger.info(f"Loaded Excel with {df.shape[0]} rows and {df.shape[1]} columns.")
 
-        return jsonify({
-            "status": "success",
-            "data_preview": data.head().to_dict(),
-            "file_path": file_path_csv
-        }), 200
+        # Converti DataFrame in Arrow Table
+        arrow_table = pa.Table.from_pandas(df)
+        # Converti Arrow Table in IPC
+        ipc_data = arrow_to_ipc(arrow_table)
+
+        SUCCESS_COUNTER.inc()
+        logger.info("Successfully extracted Excel data and converted to Arrow IPC.")
+
+        return Response(ipc_data, mimetype="application/vnd.apache.arrow.stream"), 200
 
     except Exception as e:
+        ERROR_COUNTER.inc()
+        logger.exception("Error during /extract-excel processing.")
         return jsonify({"status": "error", "message": str(e)}), 500
 
-
-@bp.route('/get-extract-excel/<client_id>/<dataset_name>', methods=['GET'])
-def get_extracted_data(client_id, dataset_name):
-    try:
-        # Percorso del file salvato
-        file_path_csv = os.path.join(DATA_FOLDER, client_id, 'extract-excel', f'{dataset_name}.csv')
-        if not os.path.exists(file_path_csv):
-            return jsonify({"error": "File non trovato"}), 404
-
-        data = pd.read_csv(file_path_csv)
-        return jsonify(data.to_dict()), 200
-    except Exception as e:
-        return jsonify({"status": "error", "message": str(e)}), 500
-
-
-# Endpoint per il monitoraggio
-from prometheus_client import Counter, generate_latest
-from flask import Response
-
-REQUEST_COUNTER = Counter('service_requests_total', 'Total number of requests for this service')
 
 @bp.route('/metrics', methods=['GET'])
 def metrics():
-    REQUEST_COUNTER.inc()
+    """
+    Prometheus monitoring endpoint.
+    """
     return Response(generate_latest(), mimetype="text/plain")
