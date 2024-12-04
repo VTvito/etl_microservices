@@ -1,6 +1,7 @@
 import pyarrow as pa
 import pyarrow.ipc as pa_ipc
 import logging
+import pandas as pd
 
 logger = logging.getLogger('clean-nan-service')
 
